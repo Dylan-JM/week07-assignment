@@ -1,4 +1,6 @@
 # Week 7 Assignment Build a Database Driven Full Stack React & Express App
+Static Site: https://forum-3nwm.onrender.com/
+Server: https://forum-server-6tz1.onrender.com/
 
 Required
 
