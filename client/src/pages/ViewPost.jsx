@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 export default function ViewPost() {
   const { id } = useParams();
@@ -158,8 +158,12 @@ export default function ViewPost() {
             >
               {postLiked ? "💔" : "❤️"} {postLikes}
             </button>
-
-            <span>By {post.username}</span>
+            <Link
+              to={`/UserProfile/${post.user_id}`}
+              className="text-purple-400 hover:underline"
+            >
+              {post.username}
+            </Link>
           </div>
         </div>
 

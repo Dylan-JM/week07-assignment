@@ -78,8 +78,8 @@ app.post("/create-post", async (req, res) => {
 app.get("/ViewPost/:id", async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT posts.*, users.username 
-       FROM posts 
+      `SELECT posts.*, users.username, users.id AS user_id
+       FROM posts
        JOIN users ON posts.user_id = users.id
        WHERE posts.id = $1`,
       [req.params.id]
@@ -93,7 +93,7 @@ app.get("/ViewPost/:id", async (req, res) => {
 
 app.get("/posts", async (req, res) => {
   const result = await db.query(
-    `SELECT posts.*, users.username
+    `SELECT posts.*, users.username, users.id AS user_id
      FROM posts
      JOIN users ON posts.user_id = users.id
      ORDER BY posts.created_at DESC`
@@ -121,7 +121,7 @@ app.post("/comments", async (req, res) => {
 app.get("/comments/:postId", async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT comments.*, users.username
+      `SELECT comments.*, users.username, users.id AS user_id
        FROM comments
        JOIN users ON comments.user_id = users.id
        WHERE comments.post_id = $1
@@ -201,4 +201,40 @@ app.get("/comment-liked/:commentId/:userId", async (req, res) => {
     [req.params.commentId, req.params.userId]
   );
   res.json({ liked: result.rows.length > 0 });
+});
+
+app.get("/user-posts/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await db.query(
+      "SELECT * FROM posts WHERE user_id = $1 ORDER BY created_at DESC",
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching user posts:", error);
+    res.status(500).json({ error: "Failed to fetch user posts" });
+  }
+});
+
+app.get("/user-comments/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await db.query(
+      `SELECT comments.*, posts.title AS post_title, posts.id AS post_id
+       FROM comments
+       JOIN posts ON comments.post_id = posts.id
+       WHERE comments.user_id = $1
+       ORDER BY comments.created_at DESC`,
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching user comments:", error);
+    res.status(500).json({ error: "Failed to fetch user comments" });
+  }
 });

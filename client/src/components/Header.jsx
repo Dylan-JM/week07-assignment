@@ -21,7 +21,7 @@ export default function Header() {
         </div>
 
         {user ? (
-          <Link to="/UserProfile">
+          <Link to={`/UserProfile/${user.id}`}>
             <p>{user.username}</p>
           </Link>
         ) : (
