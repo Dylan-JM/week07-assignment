@@ -10,7 +10,14 @@ export default function HomePage() {
       const data = await response.json();
       setPosts(data);
     }
+
     loadPosts();
+
+    const intervalId = setInterval(() => {
+      loadPosts();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (

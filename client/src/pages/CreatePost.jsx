@@ -35,7 +35,7 @@ export default function CreatePost() {
     const data = await response.json();
 
     if (data.post) {
-      window.location.href = `/post/${data.post.id}`;
+      window.location.href = `/ViewPost/${data.post.id}`;
     }
   }
 
