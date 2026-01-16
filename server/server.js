@@ -26,3 +26,16 @@ app.listen(PORT, () => {
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the server API. GET comfy!" });
 });
+
+app.post("/new-user", (req, res) => {
+  try {
+    const data = req.body;
+    const query = db.query(
+      `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`,
+      [data.username, data.password]
+    );
+  } catch (error) {
+    console.error(error, "Request failed. User not added");
+    res.status(500).json({ request: "fail" });
+  }
+});
