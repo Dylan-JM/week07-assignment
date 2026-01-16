@@ -90,3 +90,13 @@ app.get("/ViewPost/:id", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+
+app.get("/posts", async (req, res) => {
+  const result = await db.query(
+    `SELECT posts.*, users.username
+     FROM posts
+     JOIN users ON posts.user_id = users.id
+     ORDER BY posts.created_at DESC`
+  );
+  res.json(result.rows);
+});
