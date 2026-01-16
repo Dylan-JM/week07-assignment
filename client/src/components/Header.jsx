@@ -22,10 +22,7 @@ export default function Header() {
 
         {user ? (
           <Link to="/UserProfile">
-            <img
-              src={user.avatar || "/default-avatar.png"}
-              className="w-8 h-8 rounded-full border border-purple-500 object-cover"
-            />
+            <p>{user.username}</p>
           </Link>
         ) : (
           <Link

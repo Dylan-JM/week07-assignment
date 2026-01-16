@@ -57,3 +57,36 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ request: "fail" });
   }
 });
+
+app.post("/create-post", async (req, res) => {
+  try {
+    const data = req.body;
+
+    const result = await db.query(
+      `INSERT INTO posts (user_id, title, content, category, image_url)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [data.userId, data.title, data.content, data.category, data.image_url]
+    );
+
+    res.json({ status: "success", post: result.rows[0] });
+  } catch (error) {
+    res.status(500).json({ request: "fail" });
+  }
+});
+
+app.get("/ViewPost/:id", async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT posts.*, users.username 
+       FROM posts 
+       JOIN users ON posts.user_id = users.id
+       WHERE posts.id = $1`,
+      [req.params.id]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ success: false });
+  }
+});

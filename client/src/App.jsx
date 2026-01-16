@@ -14,7 +14,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route element={<HomePage />} path={"/"} />
           <Route element={<CreatePost />} path={"/CreatePost"} />
-          <Route element={<ViewPost />} path={"/ViewPost"} />
+          <Route element={<ViewPost />} path={"/ViewPost/:id"} />
           <Route element={<LoginSignUp />} path={"/LoginSignUp"} />
           <Route element={<UserProfile />} path={"/UserProfile"} />
         </Route>
