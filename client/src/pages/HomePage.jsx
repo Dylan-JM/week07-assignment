@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
+  const { categoryName } = useParams(); // <-- get category from URL
 
   useEffect(() => {
     async function loadPosts() {
@@ -20,12 +21,30 @@ export default function HomePage() {
     return () => clearInterval(intervalId);
   }, []);
 
+  // FILTER LOGIC
+  const filteredPosts = categoryName
+    ? posts.filter((post) => post.category === categoryName)
+    : posts;
+
   return (
     <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
-        <h1 className="text-2xl font-semibold">Latest Posts</h1>
+        <h1 className="text-2xl font-semibold">
+          {categoryName
+            ? `${categoryName.toUpperCase()} Posts`
+            : "Latest Posts"}
+        </h1>
 
-        {posts.map((post) => (
+        {/* CATEGORY LINKS */}
+        <div className="flex gap-4 text-purple-400 mb-4">
+          <Link to="/">All</Link>
+          <Link to="/bug">Bug</Link>
+          <Link to="/praise">Praise</Link>
+          <Link to="/funny">Funny</Link>
+          <Link to="/other">Other</Link>
+        </div>
+
+        {filteredPosts.map((post) => (
           <Link
             to={`/ViewPost/${post.id}`}
             key={post.id}

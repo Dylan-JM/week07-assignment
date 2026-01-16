@@ -65,14 +65,19 @@ export default function CreatePost() {
           className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-purple-500 outline-none"
         />
 
-        <input
-          type="text"
+        <label className="text-white">Category</label>
+        <select
           name="category"
-          placeholder="Category"
-          value={formValues.category}
+          value={formValues.category || ""}
           onChange={handleChange}
-          className="w-full px-4 py-2 rounded-md bg-gray-800 border border-gray-700 focus:border-purple-500 outline-none"
-        />
+          className="bg-gray-900 text-white p-2 rounded-md"
+        >
+          <option value="">Select a category</option>
+          <option value="bug">Bug</option>
+          <option value="praise">Praise</option>
+          <option value="funny">Funny</option>
+          <option value="other">Other</option>
+        </select>
 
         <input
           type="text"

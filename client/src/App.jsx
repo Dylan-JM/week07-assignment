@@ -13,6 +13,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route element={<HomePage />} path={"/"} />
+          <Route element={<HomePage />} path={"/:categoryName"} />
           <Route element={<CreatePost />} path={"/CreatePost"} />
           <Route element={<ViewPost />} path={"/ViewPost/:id"} />
           <Route element={<LoginSignUp />} path={"/LoginSignUp"} />
