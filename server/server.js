@@ -100,3 +100,37 @@ app.get("/posts", async (req, res) => {
   );
   res.json(result.rows);
 });
+
+app.post("/comments", async (req, res) => {
+  try {
+    const { postId, userId, content } = req.body;
+
+    const result = await db.query(
+      `INSERT INTO comments (user_id, post_id, content)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [userId, postId, content]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ success: false });
+  }
+});
+
+app.get("/comments/:postId", async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT comments.*, users.username
+       FROM comments
+       JOIN users ON comments.user_id = users.id
+       WHERE comments.post_id = $1
+       ORDER BY comments.created_at ASC`,
+      [req.params.postId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ success: false });
+  }
+});
