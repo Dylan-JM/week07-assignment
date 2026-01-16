@@ -45,6 +45,6 @@ Stretch Requirements
     🏹 Create additional SQL queries to show filtered posts. ❌
 
 
-I did not feel as though having additional SQL queries was needed for my application. I do not have multiple different filters with SQL queries as I did not see a use case for them without forcing a feature in.
+I do not have multiple different filters with SQL queries as I did not see a use case for them without forcing a feature in.
 Logon is simple and not secure but is used to verify users liking and deleting their own posts and being able to view user profiles by clicking on their name. 
 
