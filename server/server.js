@@ -134,3 +134,71 @@ app.get("/comments/:postId", async (req, res) => {
     res.status(500).json({ success: false });
   }
 });
+
+app.post("/like-post", async (req, res) => {
+  const { postId, userId } = req.body;
+  await db.query(
+    `INSERT INTO post_likes (post_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+    [postId, userId]
+  );
+  res.json({ success: true });
+});
+
+app.post("/unlike-post", async (req, res) => {
+  const { postId, userId } = req.body;
+  await db.query(`DELETE FROM post_likes WHERE post_id = $1 AND user_id = $2`, [
+    postId,
+    userId,
+  ]);
+  res.json({ success: true });
+});
+
+app.get("/post-likes/:postId", async (req, res) => {
+  const result = await db.query(
+    `SELECT COUNT(*) FROM post_likes WHERE post_id = $1`,
+    [req.params.postId]
+  );
+  res.json({ likes: parseInt(result.rows[0].count) });
+});
+
+app.get("/post-liked/:postId/:userId", async (req, res) => {
+  const result = await db.query(
+    `SELECT 1 FROM post_likes WHERE post_id = $1 AND user_id = $2`,
+    [req.params.postId, req.params.userId]
+  );
+  res.json({ liked: result.rows.length > 0 });
+});
+
+app.post("/like-comment", async (req, res) => {
+  const { commentId, userId } = req.body;
+  await db.query(
+    `INSERT INTO comment_likes (comment_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+    [commentId, userId]
+  );
+  res.json({ success: true });
+});
+
+app.post("/unlike-comment", async (req, res) => {
+  const { commentId, userId } = req.body;
+  await db.query(
+    `DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2`,
+    [commentId, userId]
+  );
+  res.json({ success: true });
+});
+
+app.get("/comment-likes/:commentId", async (req, res) => {
+  const result = await db.query(
+    `SELECT COUNT(*) FROM comment_likes WHERE comment_id = $1`,
+    [req.params.commentId]
+  );
+  res.json({ likes: parseInt(result.rows[0].count) });
+});
+
+app.get("/comment-liked/:commentId/:userId", async (req, res) => {
+  const result = await db.query(
+    `SELECT 1 FROM comment_likes WHERE comment_id = $1 AND user_id = $2`,
+    [req.params.commentId, req.params.userId]
+  );
+  res.json({ liked: result.rows.length > 0 });
+});
