@@ -134,6 +134,32 @@ export default function ViewPost() {
     }));
   }
 
+  async function handleDeletePost() {
+    if (!user) return;
+
+    await fetch(
+      `${import.meta.env.VITE_SERVER_URL}/delete-post/${id}/${user.id}`,
+      { method: "DELETE" }
+    );
+
+    // Redirect to homepage after deleting
+    window.location.href = "/";
+  }
+
+  async function handleDeleteComment(commentId) {
+    if (!user) return;
+
+    await fetch(
+      `${import.meta.env.VITE_SERVER_URL}/delete-comment/${commentId}/${
+        user.id
+      }`,
+      { method: "DELETE" }
+    );
+
+    // Remove comment from UI
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+  }
+
   if (!post) return null;
 
   return (
@@ -158,12 +184,24 @@ export default function ViewPost() {
             >
               {postLiked ? "💔" : "❤️"} {postLikes}
             </button>
-            <Link
-              to={`/UserProfile/${post.user_id}`}
-              className="text-purple-400 hover:underline"
-            >
-              {post.username}
-            </Link>
+
+            <div className="flex items-center gap-4">
+              <Link
+                to={`/UserProfile/${post.user_id}`}
+                className="text-purple-400 hover:underline"
+              >
+                {post.username}
+              </Link>
+
+              {user?.id === post.user_id && (
+                <button
+                  onClick={handleDeletePost}
+                  className="text-red-400 hover:text-red-600"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -201,7 +239,20 @@ export default function ViewPost() {
                   {commentLikes[commentItem.id]?.count ?? 0}
                 </button>
 
-                <span>{new Date(commentItem.created_at).toLocaleString()}</span>
+                <div className="flex items-center gap-4">
+                  <span>
+                    {new Date(commentItem.created_at).toLocaleString()}
+                  </span>
+
+                  {user?.id === commentItem.user_id && (
+                    <button
+                      onClick={() => handleDeleteComment(commentItem.id)}
+                      className="text-red-400 hover:text-red-600"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}

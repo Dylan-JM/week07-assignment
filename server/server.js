@@ -238,3 +238,41 @@ app.get("/user-comments/:userId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch user comments" });
   }
 });
+
+app.delete("/delete-post/:postId/:userId", async (req, res) => {
+  const { postId, userId } = req.params;
+
+  try {
+    const result = await db.query(
+      `DELETE FROM posts WHERE id = $1 AND user_id = $2 RETURNING *`,
+      [postId, userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(403).json({ error: "Not allowed" });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete post" });
+  }
+});
+
+app.delete("/delete-comment/:commentId/:userId", async (req, res) => {
+  const { commentId, userId } = req.params;
+
+  try {
+    const result = await db.query(
+      `DELETE FROM comments WHERE id = $1 AND user_id = $2 RETURNING *`,
+      [commentId, userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(403).json({ error: "Not allowed" });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete comment" });
+  }
+});
