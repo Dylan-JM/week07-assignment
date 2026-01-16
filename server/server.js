@@ -30,12 +30,30 @@ app.get("/", (req, res) => {
 app.post("/new-user", (req, res) => {
   try {
     const data = req.body;
-    const query = db.query(
+    db.query(
       `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`,
       [data.username, data.password]
     );
   } catch (error) {
     console.error(error, "Request failed. User not added");
+    res.status(500).json({ request: "fail" });
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const result = await db.query(
+      `SELECT * FROM users WHERE username = $1 AND password = $2`,
+      [username, password]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ status: "Invalid username or password" });
+    }
+    res.json({ success: true, user: result.rows[0] });
+  } catch (error) {
     res.status(500).json({ request: "fail" });
   }
 });

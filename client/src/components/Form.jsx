@@ -30,13 +30,32 @@ export function Form() {
     }
 
     if (mode === "login") {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          username: formValues.username,
-          avatar: null,
-        })
-      );
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: formValues.username,
+              password: formValues.password,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+          alert("Invalid username or password");
+          return;
+        }
+
+        localStorage.setItem("user", JSON.stringify(data.user));
+      } catch (error) {
+        console.error("Login error:", error);
+      }
     }
 
     window.location.href = "/";
